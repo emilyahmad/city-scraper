@@ -1,0 +1,365 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+:root {
+  --font-display:
+    Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
+    Segoe UI Symbol, Noto Color Emoji;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+/* Tab screens */
+.tab-screen {
+  @apply flex-1 bg-black;
+}
+
+.tab-screen__content {
+  @apply flex-grow px-5 pb-36 pt-4;
+}
+
+.tab-screen__title {
+  @apply text-3xl font-extrabold text-white;
+}
+
+.tab-screen__subtitle {
+  @apply mt-1 text-base text-neutral-400;
+}
+
+.tab-screen__subtitle--light {
+  @apply text-white;
+}
+
+/* Empty state */
+.empty-state {
+  @apply mt-8 items-center rounded-3xl bg-[#222324] p-8;
+}
+
+.empty-state__icon {
+  @apply mb-4 h-20 w-20 items-center justify-center rounded-full bg-violet-500/20;
+}
+
+.empty-state__title {
+  @apply text-xl font-bold text-white;
+}
+
+.empty-state__message {
+  @apply mt-2 text-center text-base text-neutral-400;
+}
+
+/* Event card */
+.event-card {
+  @apply rounded-3xl p-3 shadow-lg;
+}
+
+.event-card--green {
+  @apply bg-[#a3b077];
+}
+
+.event-card--pink {
+  @apply bg-[#f2bfdc];
+}
+
+.event-card--blue {
+  @apply bg-[#c3cff0];
+}
+
+.event-card--yellow {
+  @apply bg-[#f3de87];
+}
+
+.event-card__row {
+  @apply flex-row items-start;
+}
+
+.event-card__body {
+  @apply flex-1 pr-3;
+}
+
+.event-card__date {
+  @apply text-[11px] font-medium text-neutral-800;
+}
+
+.event-card__title {
+  @apply text-base font-semibold text-neutral-900;
+}
+
+.event-card__description {
+  @apply mt-1 text-[11px] leading-4 text-neutral-800;
+}
+
+.event-card__thumb {
+  @apply h-16 w-16 items-center justify-center rounded-2xl bg-white/50;
+}
+
+.event-card__footer {
+  @apply mt-2 flex-row items-center justify-between;
+}
+
+.event-card__venue {
+  @apply flex-1 pr-2 text-[11px] font-semibold text-neutral-900;
+}
+
+.event-card__price {
+  @apply text-xs font-bold text-neutral-900;
+}
+
+/* Swipeable event card */
+.swipe-label {
+  @apply absolute top-3 rounded-lg border-2 px-2 py-0.5;
+}
+
+.swipe-label--pin {
+  @apply left-3 border-emerald-700 bg-white/70;
+}
+
+.swipe-label--archive {
+  @apply right-3 border-red-700 bg-white/70;
+}
+
+.swipe-label__text {
+  @apply text-xs font-extrabold tracking-widest;
+}
+
+.swipe-label__text--pin {
+  @apply text-emerald-700;
+}
+
+.swipe-label__text--archive {
+  @apply text-red-700;
+}
+
+/* Event stack */
+.event-stack {
+  @apply h-36 justify-end;
+}
+
+.event-stack__item {
+  @apply absolute inset-x-0 bottom-0;
+}
+
+/* Map pin */
+.event-pin {
+  @apply h-8 w-8 items-center justify-center rounded-full border-2 border-white;
+}
+
+.event-pin--active {
+  @apply h-11 w-11 border-[3px];
+}
+
+/* Discover screen */
+.discover-screen {
+  @apply flex-1 bg-black;
+}
+
+.discover-screen__overlay {
+  @apply flex-1 justify-between;
+}
+
+.discover-screen__header {
+  @apply px-5 pt-4;
+}
+
+.discover-screen__body {
+  @apply px-8;
+}
+
+.discover-screen__reset {
+  @apply mt-3 self-start rounded-full bg-violet-500 px-3 py-1.5 active:opacity-60;
+}
+
+.discover-screen__reset-label {
+  @apply text-xs font-semibold text-white;
+}
+
+.map-placeholder {
+  @apply items-center justify-center bg-[#222324];
+}
+
+.map-placeholder__text {
+  @apply text-base text-neutral-400;
+}
+
+/* Pinned list */
+.pinned-item {
+  @apply mt-4;
+}
+
+.pinned-item__unpin {
+  @apply mt-1 self-end px-2 py-1 active:opacity-60;
+}
+
+.pinned-item__unpin-label {
+  @apply text-sm font-semibold text-neutral-400;
+}
+
+/* Settings screen */
+.settings-screen {
+  @apply flex-1 bg-black;
+}
+
+.settings-section {
+  @apply mt-6;
+}
+
+.settings-section__title {
+  @apply mb-2 px-2 text-lg font-bold text-neutral-400;
+}
+
+.settings-section__card {
+  @apply overflow-hidden rounded-2xl bg-[#222324];
+}
+
+.settings-row {
+  @apply flex-row items-center pl-4;
+}
+
+.settings-row__icon {
+  @apply h-8 w-8 items-center justify-center rounded-lg;
+}
+
+.settings-row__body {
+  @apply ml-3 min-h-14 flex-1 flex-row items-center justify-between pr-4;
+}
+
+.settings-row__body--divider {
+  @apply border-b border-[#313233];
+}
+
+.settings-row__label {
+  @apply text-base font-medium text-white;
+}
+
+/* Profile card */
+.profile-card__header {
+  @apply flex-row items-center border-b border-[#313233] px-4 py-3;
+}
+
+.profile-card__avatar {
+  @apply h-12 w-12 items-center justify-center rounded-full bg-violet-500;
+}
+
+.profile-card__initial {
+  @apply text-xl font-bold text-white;
+}
+
+.profile-card__info {
+  @apply ml-3 flex-1;
+}
+
+.profile-card__name {
+  @apply text-base font-semibold text-white;
+}
+
+.profile-card__link {
+  @apply text-sm text-neutral-400;
+}
+
+.profile-card__edit {
+  @apply min-h-14 flex-row items-center justify-between px-4;
+}
+
+/* Floating tab bar */
+.floating-tab-bar {
+  @apply absolute inset-x-6 flex-row rounded-full border border-[#2f2f2f] bg-[#1d1d1d] p-1.5 shadow-lg;
+}
+
+.floating-tab-bar__item {
+  @apply flex-1 items-center justify-center rounded-full py-2;
+}
+
+.floating-tab-bar__indicator {
+  @apply flex-1 rounded-full bg-[#3a3a3b];
+}
+
+.floating-tab-bar__label {
+  @apply mt-1 text-xs font-semibold text-zinc-400;
+}
+
+.floating-tab-bar__label--active {
+  @apply text-white;
+}
+
+/* Edit preferences modal */
+.edit-modal {
+  @apply flex-1 justify-end;
+}
+
+.edit-modal__backdrop {
+  @apply flex-1 bg-black/60;
+}
+
+.edit-modal__sheet {
+  @apply rounded-t-[32px] bg-[#1c1c1e] px-5 pb-10 pt-3;
+}
+
+.edit-modal__fill {
+  @apply absolute left-0 right-0 top-full h-[300px] bg-[#1c1c1e];
+}
+
+.edit-modal__close {
+  @apply absolute right-4 top-4 h-11 w-11 items-center justify-center z-10 rounded-full bg-[#2c2c2e] active:opacity-60;
+}
+
+.edit-modal__title {
+  @apply mt-4 text-center text-2xl font-bold text-white;
+}
+
+.edit-modal__subtitle {
+  @apply mt-2 px-4 text-center text-base text-neutral-400;
+}
+
+.edit-modal__save {
+  @apply mt-6 h-12 items-center justify-center rounded-full bg-violet-500;
+}
+
+.edit-modal__save-label {
+  @apply text-base font-semibold text-white;
+}
+
+/* Interest chips */
+.interest-chips {
+  @apply mt-6 max-h-[320px];
+}
+
+.interest-chips__content {
+  @apply flex-row flex-wrap justify-center gap-2;
+}
+
+.interest-chip {
+  @apply rounded-full bg-[#2c2c2e] px-5 py-3 active:opacity-60;
+}
+
+.interest-chip--selected {
+  @apply bg-violet-500;
+}
+
+.interest-chip__label {
+  @apply text-base font-medium text-white;
+}
+
+/* Editable field */
+.editable-field {
+  @apply pl-4;
+}
+
+.editable-field__body {
+  @apply min-h-14 flex-row items-center pr-4;
+}
+
+.editable-field__body--divider {
+  @apply border-b border-[#313233];
+}
+
+.editable-field__label {
+  @apply text-base font-medium text-white;
+}
+
+.editable-field__input {
+  @apply mx-3 flex-1 py-3 text-right text-base text-neutral-400;
+}
