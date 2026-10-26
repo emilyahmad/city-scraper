@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { type ComponentRef, useRef } from 'react';
+import { type ComponentRef, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
 import { images } from '@/constants/images';
@@ -14,6 +14,7 @@ type EditableFieldProps = {
 
 export function EditableField({ field, value, isLast, onChange }: EditableFieldProps) {
   const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <Pressable className="editable-field" onPress={() => inputRef.current?.focus()}>
@@ -28,8 +29,17 @@ export function EditableField({ field, value, isLast, onChange }: EditableFieldP
           placeholderTextColor="#6b7280"
           keyboardType={field.keyboardType}
           returnKeyType="done"
+          onFocus={() => setIsEditing(true)}
+          onBlur={() => setIsEditing(false)}
         />
-        <Image source={images.pencil} tintColor="#9ca3af" contentFit="contain" style={{ width: 16, height: 16 }} />
+        {isEditing ? (
+          // Clearing keeps focus on the input so the keyboard stays open.
+          <Pressable onPress={() => onChange('')} hitSlop={12}>
+            <Image source={images.close} tintColor="#9ca3af" contentFit="contain" style={{ width: 16, height: 16 }} />
+          </Pressable>
+        ) : (
+          <Image source={images.pencil} tintColor="#9ca3af" contentFit="contain" style={{ width: 16, height: 16 }} />
+        )}
       </View>
     </Pressable>
   );

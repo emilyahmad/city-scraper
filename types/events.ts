@@ -1,6 +1,6 @@
 import type { Ionicons } from '@expo/vector-icons';
 
-export type EventCategory = 'Movies' | 'Film' | 'Theater' | 'Broadway';
+export type EventCategory = 'Movies' | 'Film' | 'Theater' | 'Broadway' | 'Comedy' | 'Opera';
 
 export type EventTone = 'green' | 'pink' | 'blue' | 'yellow';
 
@@ -19,4 +19,6 @@ export type EventItem = {
   price: number;
   tone: EventTone;
   icon: keyof typeof Ionicons.glyphMap;
+  imageUrl: string;
+  host: string;
 };

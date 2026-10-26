@@ -13,7 +13,7 @@ const DEFAULT_VALUES: PreferenceValues = {
   location: 'New York, NY',
   distance: '5',
   days: 'Fri, Sat, Sun',
-  times: 'Evening',
+  times: '6:00 PM - 10:00 PM',
   interests: 'Running, Movies, Finance',
 };
 

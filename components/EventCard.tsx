@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { Text, View } from 'react-native';
 
 import type { EventItem } from '@/types/events';
@@ -10,7 +11,7 @@ type EventCardProps = {
 const TIME_ZONE = 'America/New_York';
 
 // e.g. "Fri, Oct 30 · 11:30 PM"
-function formatWhen(startAt: string) {
+export function formatWhen(startAt: string) {
   const date = new Date(startAt);
   const day = date.toLocaleDateString('en-US', {
     weekday: 'short',
@@ -34,15 +35,18 @@ export function EventCard({ event }: EventCardProps) {
       <View className="event-card__row">
         <View className="event-card__body">
           <Text className="event-card__date">{formatWhen(event.startAt)}</Text>
-          <Text className="event-card__title" numberOfLines={1}>
+          {/* The icon is nested in the text so it follows the last word, even when the title wraps. A non-breaking space keeps it from landing alone on a new line. */}
+          <Text className="event-card__title" numberOfLines={2}>
             {event.title}
+            {'\u00A0'}
+            <Ionicons name={event.icon} size={18} color="#171717" />
           </Text>
           <Text className="event-card__description" numberOfLines={2}>
             {event.description}
           </Text>
         </View>
         <View className="event-card__thumb">
-          <Ionicons name={event.icon} size={28} color="#171717" />
+          <Image source={{ uri: event.imageUrl }} contentFit="cover" style={{ width: '100%', height: '100%' }} />
         </View>
       </View>
       <View className="event-card__footer">

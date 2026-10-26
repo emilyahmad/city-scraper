@@ -4,9 +4,11 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue,
 
 import type { BottomTabBarProps } from 'expo-router/tabs';
 
+import { useEventsStore } from '@/store/events';
+
 const ACTIVE_COLOR = '#ffffff';
 const INACTIVE_COLOR = '#a1a1aa'; // zinc-400
-const BAR_PADDING = 6; // matches p-1.5 on .floating-tab-bar
+const BAR_PADDING = 4; // matches p-1 on .floating-tab-bar
 // Loose springs so the pill trails the finger and wobbles when it lands
 const DRAG_SPRING = { damping: 15, stiffness: 190, mass: 0.9 };
 const SETTLE_SPRING = { damping: 11, stiffness: 170, mass: 0.9 };
@@ -18,6 +20,7 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab, ins
   // Tab under the finger while dragging, null when not touching the bar
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const hoverIndex = useRef(state.index);
+  const hasNewPin = useEventsStore((store) => store.hasNewPin);
 
   const tabCount = state.routes.length;
   const itemWidth = Math.max((barWidth - BAR_PADDING * 2) / tabCount, 0);
@@ -101,7 +104,7 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab, ins
     <View
       ref={barRef}
       className="floating-tab-bar"
-      style={{ bottom: Math.max(insets.bottom, 12) }}
+      style={{ bottom: Math.max(insets.bottom - 6, 6) }}
       onLayout={handleLayout}
       onTouchStart={(event) => handleTouchStart(event.nativeEvent.pageX)}
       onTouchMove={(event) => handleTouchMove(event.nativeEvent.pageX)}
@@ -124,7 +127,10 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab, ins
             accessibilityRole="button"
             accessibilityState={{ selected: state.index === index }}
             className="floating-tab-bar__item">
-            {options.tabBarIcon?.({ focused, color, size: 24 })}
+            <View>
+              {options.tabBarIcon?.({ focused, color, size: 22 })}
+              {route.name === 'pinned' && hasNewPin && <View className="floating-tab-bar__badge" />}
+            </View>
             <Text className={focused ? 'floating-tab-bar__label floating-tab-bar__label--active' : 'floating-tab-bar__label'}>
               {options.title}
             </Text>

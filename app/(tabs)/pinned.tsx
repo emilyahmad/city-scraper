@@ -1,3 +1,5 @@
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,6 +12,14 @@ import { useEventsStore } from '@/store/events';
 export default function PinnedScreen() {
   const pinnedIds = useEventsStore((state) => state.pinnedIds);
   const unpin = useEventsStore((state) => state.unpin);
+  const clearNewPin = useEventsStore((state) => state.clearNewPin);
+
+  // Opening the tab counts as seeing the new pin
+  useFocusEffect(
+    useCallback(() => {
+      clearNewPin();
+    }, [clearNewPin]),
+  );
 
   const pinned = EVENTS.filter((event) => pinnedIds.includes(event.id)).sort((a, b) =>
     a.startAt.localeCompare(b.startAt),

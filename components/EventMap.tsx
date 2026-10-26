@@ -9,6 +9,10 @@ import type { EventItem } from '@/types/events';
 type EventMapProps = {
   events: EventItem[];
   activeId?: string;
+  // Bump to re-center on the active event after the user has panned away
+  recenterKey?: number;
+  // false once the user drags or zooms away from the active event, true when the map returns to it
+  onCenteredChange?: (centered: boolean) => void;
 };
 
 const NYC_REGION = {
@@ -21,12 +25,13 @@ const NYC_REGION = {
 // Center a bit south of the pin so it sits above the card stack.
 const CENTER_LAT_OFFSET = 0.006;
 
-export function EventMap({ events, activeId }: EventMapProps) {
+export function EventMap({ events, activeId, recenterKey = 0, onCenteredChange }: EventMapProps) {
   const mapRef = useRef<MapView>(null);
   const active = events.find((event) => event.id === activeId);
 
   useEffect(() => {
     if (!active) return;
+    onCenteredChange?.(true);
     mapRef.current?.animateToRegion(
       {
         latitude: active.latitude - CENTER_LAT_OFFSET,
@@ -36,13 +41,18 @@ export function EventMap({ events, activeId }: EventMapProps) {
       },
       500,
     );
-  }, [active]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, recenterKey]);
 
   return (
     <MapView
       ref={mapRef}
       style={StyleSheet.absoluteFill}
       initialRegion={NYC_REGION}
+      onPanDrag={() => onCenteredChange?.(false)}
+      onRegionChangeComplete={(_region, details) => {
+        if (details?.isGesture) onCenteredChange?.(false);
+      }}
       userInterfaceStyle="dark"
       showsPointsOfInterests={false}>
       {events.map((event) => {

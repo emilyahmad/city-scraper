@@ -32,7 +32,7 @@
 }
 
 .tab-screen__subtitle--light {
-  @apply text-white;
+  @apply text-white leading-snug;
 }
 
 /* Empty state */
@@ -54,7 +54,7 @@
 
 /* Event card */
 .event-card {
-  @apply rounded-3xl p-3 shadow-lg;
+  @apply rounded-[30px] p-[15px];
 }
 
 .event-card--green {
@@ -78,65 +78,101 @@
 }
 
 .event-card__body {
-  @apply flex-1 pr-3;
+  @apply flex-1 pr-[15px];
 }
 
 .event-card__date {
-  @apply text-[11px] font-medium text-neutral-800;
+  @apply text-[12.5px] font-medium text-neutral-800;
 }
 
 .event-card__title {
-  @apply text-base font-semibold text-neutral-900;
+  @apply text-[18px] font-semibold text-neutral-900;
 }
 
 .event-card__description {
-  @apply mt-1 text-[11px] leading-4 text-neutral-800;
+  @apply mt-[5px] text-[12.5px] leading-[18px] text-neutral-800;
 }
 
 .event-card__thumb {
-  @apply h-16 w-16 items-center justify-center rounded-2xl bg-white/50;
+  @apply h-20 w-20 overflow-hidden rounded-[20px] bg-white/50;
 }
 
 .event-card__footer {
-  @apply mt-2 flex-row items-center justify-between;
+  @apply mt-[10px] flex-row items-center justify-between;
 }
 
 .event-card__venue {
-  @apply flex-1 pr-2 text-[11px] font-semibold text-neutral-900;
+  @apply flex-1 pr-[10px] text-[12.5px] font-semibold text-neutral-900;
 }
 
 .event-card__price {
-  @apply text-xs font-bold text-neutral-900;
+  @apply text-[14px] font-bold text-neutral-900;
 }
 
-/* Swipeable event card */
-.swipe-label {
-  @apply absolute top-3 rounded-lg border-2 px-2 py-0.5;
+/* Event detail modal */
+.event-detail {
+  @apply flex-1 justify-end;
 }
 
-.swipe-label--pin {
-  @apply left-3 border-emerald-700 bg-white/70;
+.event-detail__dim {
+  @apply absolute inset-0 bg-black/30;
 }
 
-.swipe-label--archive {
-  @apply right-3 border-red-700 bg-white/70;
+.event-detail__backdrop {
+  @apply absolute inset-0;
 }
 
-.swipe-label__text {
-  @apply text-xs font-extrabold tracking-widest;
+.event-detail__card {
+  @apply mt-24 flex-1 rounded-t-[32px] bg-[#1c1c1e];
 }
 
-.swipe-label__text--pin {
-  @apply text-emerald-700;
+.event-detail__content {
+  @apply px-5 pb-16 pt-14;
 }
 
-.swipe-label__text--archive {
-  @apply text-red-700;
+.event-detail__grabber {
+  @apply absolute inset-x-0 top-0 z-10 h-14 items-center pt-4;
+}
+
+.event-detail__handle {
+  @apply h-1.5 w-24 rounded-full bg-white/30;
+}
+
+.event-detail__close {
+  @apply absolute right-3 top-3 z-10 h-9 w-9 items-center justify-center active:opacity-60;
+}
+
+.event-detail__image {
+  @apply mx-5 aspect-square overflow-hidden rounded-3xl bg-neutral-800;
+}
+
+.event-detail__header {
+  @apply mt-10 flex-row items-start gap-3;
+}
+
+.event-detail__title {
+  @apply flex-1 text-3xl font-bold text-white;
+}
+
+.event-detail__host {
+  @apply mt-2 text-base font-medium text-neutral-300;
+}
+
+.event-detail__when {
+  @apply mt-4 text-lg font-medium text-neutral-400;
+}
+
+.event-detail__meta {
+  @apply mt-1 text-base text-neutral-400;
+}
+
+.event-detail__section {
+  @apply mt-6 border-b border-white/10 pb-2 text-base font-medium text-neutral-500;
 }
 
 /* Event stack */
 .event-stack {
-  @apply h-36 justify-end;
+  @apply h-[180px] justify-end;
 }
 
 .event-stack__item {
@@ -152,13 +188,18 @@
   @apply h-11 w-11 border-[3px];
 }
 
+/* Swipe backdrop */
+.swipe-backdrop {
+  @apply absolute inset-0;
+}
+
 /* Discover screen */
 .discover-screen {
   @apply flex-1 bg-black;
 }
 
 .discover-screen__overlay {
-  @apply flex-1 justify-between;
+  @apply absolute inset-0 justify-between;
 }
 
 .discover-screen__header {
@@ -266,15 +307,19 @@
 
 /* Floating tab bar */
 .floating-tab-bar {
-  @apply absolute inset-x-6 flex-row rounded-full border border-[#2f2f2f] bg-[#1d1d1d] p-1.5 shadow-lg;
+  @apply absolute inset-x-6 flex-row rounded-full border border-[#2f2f2f] bg-[#1d1d1d] p-1 shadow-lg;
 }
 
 .floating-tab-bar__item {
-  @apply flex-1 items-center justify-center rounded-full py-2;
+  @apply flex-1 items-center justify-center rounded-full py-1.5;
 }
 
 .floating-tab-bar__indicator {
   @apply flex-1 rounded-full bg-[#3a3a3b];
+}
+
+.floating-tab-bar__badge {
+  @apply absolute -right-1 -top-0.5 h-2.5 w-2.5 rounded-full border border-[#1d1d1d] bg-red-500;
 }
 
 .floating-tab-bar__label {
@@ -306,8 +351,12 @@
   @apply absolute right-4 top-4 h-11 w-11 items-center justify-center z-10 rounded-full bg-[#2c2c2e] active:opacity-60;
 }
 
+.edit-modal__heading {
+  @apply mt-4 flex-row items-center justify-center gap-2;
+}
+
 .edit-modal__title {
-  @apply mt-4 text-center text-2xl font-bold text-white;
+  @apply text-center text-2xl font-bold text-white;
 }
 
 .edit-modal__subtitle {
@@ -315,7 +364,11 @@
 }
 
 .edit-modal__save {
-  @apply mt-6 h-12 items-center justify-center rounded-full bg-violet-500;
+  @apply mt-6 h-12 items-center justify-center w-60 self-center rounded-full bg-violet-500;
+}
+
+.edit-modal__save--disabled {
+  @apply bg-[#3a3a3c];
 }
 
 .edit-modal__save-label {
@@ -324,11 +377,12 @@
 
 /* Interest chips */
 .interest-chips {
-  @apply mt-6 max-h-[320px];
+  @apply -mx-3 mt-6;
 }
 
+/* The scroll view extends into the sheet's side padding so its scroll bar sits clear of the chips. */
 .interest-chips__content {
-  @apply flex-row flex-wrap justify-center gap-2;
+  @apply flex-row flex-wrap justify-center gap-2 px-3;
 }
 
 .interest-chip {
@@ -361,5 +415,139 @@
 }
 
 .editable-field__input {
-  @apply mx-3 flex-1 py-3 text-right text-base text-neutral-400;
+  /* iOS pushes text to the bottom of a TextInput line box taller than the font, so the line height matches the font size (text-base's 24px line height would drop the value below the label). */
+  @apply ml-10 mr-3 h-6 flex-1 py-0 text-right text-[16px] leading-none text-neutral-400;
+}
+
+/* Day picker */
+.day-picker {
+  @apply mt-6 flex-row overflow-hidden rounded-2xl bg-[#222324] p-1;
+}
+
+.day-picker__day {
+  @apply h-11 flex-1 items-center justify-center transition-colors duration-150 active:bg-[#3a3b3d];
+}
+
+.day-picker__day--selected {
+  @apply bg-[#48494b];
+}
+
+/* Only the ends of a run of selected days are rounded; the overlap hides the hairline seam between neighbours. */
+.day-picker__day--start {
+  @apply rounded-l-xl;
+}
+
+.day-picker__day--end {
+  @apply rounded-r-xl;
+}
+
+.day-picker__day--joins-prev {
+  @apply -ml-px;
+}
+
+.day-picker__label {
+  @apply text-base font-medium text-white;
+}
+
+/* Time range picker */
+.time-range {
+  @apply mt-3;
+}
+
+.time-range__slots {
+  @apply flex-row gap-3;
+}
+
+.time-range__slot {
+  @apply flex-1 overflow-hidden rounded-2xl bg-[#222324];
+}
+
+.time-range__slot-fill {
+  @apply absolute inset-0 overflow-hidden rounded-2xl;
+}
+
+.time-range__slot-highlight {
+  @apply flex-1 bg-[#48494b];
+}
+
+.time-range__slot-text {
+  @apply z-10 px-4 py-3;
+}
+
+.time-range__slot-label {
+  @apply text-sm font-medium text-neutral-400;
+}
+
+.time-range__slot-time {
+  @apply mt-1 text-lg font-semibold text-white;
+}
+
+.time-range__wheel-space {
+  @apply mt-3 h-[200px];
+}
+
+.time-range__wheels {
+  @apply h-[200px] flex-row overflow-hidden rounded-2xl bg-[#222324];
+}
+
+/* The band behind the middle row of every wheel, like the iOS time picker. */
+.time-range__highlight {
+  @apply absolute left-2 right-2 top-[80px] h-10 rounded-lg bg-white/10;
+}
+
+.time-range__column {
+  @apply flex-1;
+}
+
+.time-wheel {
+  @apply flex-1;
+}
+
+.time-wheel__row {
+  @apply h-10 items-center justify-center;
+}
+
+.time-wheel__label {
+  @apply text-2xl font-medium text-white;
+}
+
+/* City suggestions */
+.city-suggestions {
+  @apply mt-3 overflow-hidden rounded-3xl bg-[#2c2c2e];
+}
+
+.city-suggestion {
+  @apply flex-row items-center pl-4 active:opacity-60;
+}
+
+.city-suggestion--selected {
+  @apply bg-violet-500;
+}
+
+.city-suggestion__body {
+  @apply flex-1 py-4 pr-4;
+}
+
+.city-suggestion__body--divider {
+  @apply border-b border-[#3a3a3c];
+}
+
+.city-suggestion__body--divider-selected {
+  @apply border-violet-500;
+}
+
+.city-suggestion__body--divider-hidden {
+  @apply border-[#2c2c2e];
+}
+
+.city-suggestion__name {
+  @apply text-base font-medium text-white;
+}
+
+.city-suggestion__detail {
+  @apply mt-0.5 text-sm text-neutral-400;
+}
+
+.city-suggestion__detail--selected {
+  @apply text-white;
 }
