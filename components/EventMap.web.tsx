@@ -5,6 +5,7 @@ import type { EventItem } from '@/types/events';
 type EventMapProps = {
   events: EventItem[];
   activeId?: string;
+  onSelect?: (id: string) => void;
 };
 
 // react-native-maps doesn't run on web, so show a placeholder instead.

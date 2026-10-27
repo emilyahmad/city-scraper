@@ -6,15 +6,29 @@ import { images } from '@/constants/images';
 import type { PreferenceField } from '@/types/preferences';
 
 type EditableFieldProps = {
-  field: PreferenceField;
+  field: Pick<PreferenceField, 'label' | 'placeholder' | 'keyboardType'>;
   value: string;
   isLast: boolean;
+  // When set, the row is a plain button instead of a text input, so no keyboard opens.
+  onPress?: () => void;
   onChange: (value: string) => void;
 };
 
-export function EditableField({ field, value, isLast, onChange }: EditableFieldProps) {
+export function EditableField({ field, value, isLast, onChange, onPress }: EditableFieldProps) {
   const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  if (onPress) {
+    return (
+      <Pressable className="editable-field" onPress={onPress}>
+        <View className={isLast ? 'editable-field__body' : 'editable-field__body editable-field__body--divider'}>
+          <Text className="editable-field__label">{field.label}</Text>
+          <Text className="editable-field__input">{value || field.placeholder}</Text>
+          <Image source={images.pencil} tintColor="#9ca3af" contentFit="contain" style={{ width: 16, height: 16 }} />
+        </View>
+      </Pressable>
+    );
+  }
 
   return (
     <Pressable className="editable-field" onPress={() => inputRef.current?.focus()}>

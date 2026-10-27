@@ -3,9 +3,10 @@ import { Pressable, Text, View } from 'react-native';
 
 type ProfileCardProps = {
   name: string;
+  onEdit: () => void;
 };
 
-export function ProfileCard({ name }: ProfileCardProps) {
+export function ProfileCard({ name, onEdit }: ProfileCardProps) {
   return (
     <View className="settings-section__card">
       <Pressable className="profile-card__header">
@@ -14,11 +15,9 @@ export function ProfileCard({ name }: ProfileCardProps) {
         </View>
         <View className="profile-card__info">
           <Text className="profile-card__name">{name}</Text>
-          <Text className="profile-card__link">View Profile</Text>
         </View>
-        <Ionicons name="chevron-forward" size={18} color="#6b7280" />
       </Pressable>
-      <Pressable className="profile-card__edit">
+      <Pressable className="profile-card__edit" onPress={onEdit}>
         <Text className="settings-row__label">Edit Profile</Text>
         <Ionicons name="chevron-forward" size={18} color="#6b7280" />
       </Pressable>

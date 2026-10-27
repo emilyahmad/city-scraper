@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import Animated, { type SharedValue, ZoomIn, useAnimatedScrollHandler } from 'react-native-reanimated';
 
@@ -13,6 +13,8 @@ const MAX_HEIGHT_RATIO = 0.55;
 // The grid runs this far past its layout box, under the save button and the sheet's bottom padding, so chips scroll to the sheet's edge.
 // The matching negative margin and content padding keep the sheet's height and the last row's resting position unchanged.
 const BOTTOM_OVERLAP = 112;
+// Room under the footer (e.g. the quiz's Finish button) once the grid is long enough to scroll
+const FOOTER_GAP = 32;
 
 type InterestChipsProps = {
   /** Comma-separated interests, the same format the preferences store uses */
@@ -20,6 +22,8 @@ type InterestChipsProps = {
   onChange: (value: string) => void;
   /** Mirrors the grid's scroll position so the sheet's swipe-to-close can tell when the grid is scrolled */
   scrollOffset: SharedValue<number>;
+  /** Scrolls with the grid, on its own row below the last chip (e.g. a continue button). Without it, the grid runs under whatever sits below it. */
+  footer?: ReactNode;
 };
 
 const parseInterests = (value: string) =>
@@ -28,7 +32,7 @@ const parseInterests = (value: string) =>
     .map((interest) => interest.trim())
     .filter(Boolean);
 
-export function InterestChips({ value, onChange, scrollOffset }: InterestChipsProps) {
+export function InterestChips({ value, onChange, scrollOffset, footer }: InterestChipsProps) {
   const { height } = useWindowDimensions();
   // Tracked on the UI thread so scrolling never waits on the JS thread.
   const onScroll = useAnimatedScrollHandler((event) => {
@@ -66,11 +70,12 @@ export function InterestChips({ value, onChange, scrollOffset }: InterestChipsPr
     <AnimatedScrollView
       className="interest-chips"
       contentContainerClassName="interest-chips__content"
-      style={{
-        maxHeight: height * MAX_HEIGHT_RATIO + BOTTOM_OVERLAP,
-        marginBottom: -BOTTOM_OVERLAP,
-      }}
-      contentContainerStyle={{ paddingBottom: BOTTOM_OVERLAP }}
+      style={
+        footer
+          ? { flexShrink: 1 }
+          : { maxHeight: height * MAX_HEIGHT_RATIO + BOTTOM_OVERLAP, marginBottom: -BOTTOM_OVERLAP }
+      }
+      contentContainerStyle={{ paddingBottom: footer ? FOOTER_GAP : BOTTOM_OVERLAP }}
       showsVerticalScrollIndicator={false}
       bounces
       overScrollMode="always"
@@ -96,6 +101,7 @@ export function InterestChips({ value, onChange, scrollOffset }: InterestChipsPr
           </Animated.View>
         );
       })}
+      {footer ? <View className="w-full">{footer}</View> : null}
     </AnimatedScrollView>
   );
 }

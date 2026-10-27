@@ -44,12 +44,33 @@
   @apply mb-4 h-20 w-20 items-center justify-center rounded-full bg-violet-500/20;
 }
 
+/* Same footprint as the icon so the text doesn't shift */
+.empty-state__loading {
+  @apply mb-4 h-20 items-center justify-center;
+}
+
 .empty-state__title {
   @apply text-xl font-bold text-white;
 }
 
 .empty-state__message {
   @apply mt-2 text-center text-base text-neutral-400;
+}
+
+.empty-state__action {
+  @apply mt-5 rounded-full bg-violet-500 px-5 py-2.5 active:opacity-60;
+}
+
+.empty-state__action-label {
+  @apply text-base font-semibold text-white;
+}
+
+.loading-dots {
+  @apply flex-row items-center gap-2;
+}
+
+.loading-dots__dot {
+  @apply h-2.5 w-2.5 rounded-full bg-violet-500;
 }
 
 /* Event card */
@@ -166,6 +187,15 @@
   @apply mt-1 text-base text-neutral-400;
 }
 
+.event-detail__source {
+  @apply mt-1 text-sm text-neutral-500;
+}
+
+/* Shown in place of an event image when the source had none; the tone color is set inline */
+.event-image__fallback {
+  @apply h-full w-full items-center justify-center;
+}
+
 .event-detail__section {
   @apply mt-6 border-b border-white/10 pb-2 text-base font-medium text-neutral-500;
 }
@@ -186,6 +216,11 @@
 
 .event-pin--active {
   @apply h-11 w-11 border-[3px];
+}
+
+/* Swipeable card */
+.swipe-card__archive {
+  @apply absolute bottom-0 right-0 top-0 items-center justify-center overflow-hidden rounded-[30px] bg-red-500;
 }
 
 /* Swipe backdrop */
@@ -210,14 +245,6 @@
   @apply px-8;
 }
 
-.discover-screen__reset {
-  @apply mt-3 self-start rounded-full bg-violet-500 px-3 py-1.5 active:opacity-60;
-}
-
-.discover-screen__reset-label {
-  @apply text-xs font-semibold text-white;
-}
-
 .map-placeholder {
   @apply items-center justify-center bg-[#222324];
 }
@@ -231,17 +258,17 @@
   @apply mt-4;
 }
 
-.pinned-item__unpin {
-  @apply mt-1 self-end px-2 py-1 active:opacity-60;
-}
-
-.pinned-item__unpin-label {
-  @apply text-sm font-semibold text-neutral-400;
-}
-
 /* Settings screen */
 .settings-screen {
   @apply flex-1 bg-black;
+}
+
+.settings-screen__sign-out {
+  @apply mt-6 h-14 items-center justify-center rounded-2xl bg-[#222324] active:opacity-60;
+}
+
+.settings-screen__sign-out-label {
+  @apply text-base font-semibold text-red-400;
 }
 
 .settings-section {
@@ -297,10 +324,6 @@
   @apply text-base font-semibold text-white;
 }
 
-.profile-card__link {
-  @apply text-sm text-neutral-400;
-}
-
 .profile-card__edit {
   @apply min-h-14 flex-row items-center justify-between px-4;
 }
@@ -308,6 +331,10 @@
 /* Floating tab bar */
 .floating-tab-bar {
   @apply absolute inset-x-6 flex-row rounded-full border border-[#2f2f2f] bg-[#1d1d1d] p-1 shadow-lg;
+}
+
+.floating-tab-bar--translucent {
+  @apply border-[#2f2f2f]/70 bg-[#1d1d1d]/70;
 }
 
 .floating-tab-bar__item {
@@ -328,6 +355,19 @@
 
 .floating-tab-bar__label--active {
   @apply text-white;
+}
+
+/* Undo archive */
+.undo-archive {
+  @apply absolute inset-x-0 items-center justify-center pb-1.5;
+}
+
+.undo-archive__button {
+  @apply px-3 py-1 active:opacity-60;
+}
+
+.undo-archive__label {
+  @apply text-base font-semibold text-white;
 }
 
 /* Edit preferences modal */
@@ -419,6 +459,48 @@
   @apply ml-10 mr-3 h-6 flex-1 py-0 text-right text-[16px] leading-none text-neutral-400;
 }
 
+/* Distance slider */
+.distance-slider {
+  @apply mt-3 rounded-2xl bg-[#222324] px-4 pb-4 pt-4;
+}
+
+.distance-slider__header {
+  @apply mb-2 flex-row items-center justify-between;
+}
+
+.distance-slider__label {
+  @apply text-base font-medium text-white;
+}
+
+.distance-slider__value {
+  @apply text-base font-semibold text-violet-500;
+}
+
+/* Tall enough for a comfortable touch target; the track and thumb sit centred inside it. */
+.distance-slider__track-area {
+  @apply h-10 justify-center;
+}
+
+.distance-slider__track {
+  @apply mx-3.5 h-2.5 overflow-hidden rounded-full bg-[#3a3b3d];
+}
+
+.distance-slider__fill {
+  @apply h-full rounded-full bg-violet-500;
+}
+
+.distance-slider__thumb {
+  @apply absolute left-0 h-7 w-7 rounded-full bg-white shadow-md;
+}
+
+.distance-slider__range {
+  @apply mt-1 flex-row justify-between;
+}
+
+.distance-slider__range-label {
+  @apply text-xs text-neutral-400;
+}
+
 /* Day picker */
 .day-picker {
   @apply mt-6 flex-row overflow-hidden rounded-2xl bg-[#222324] p-1;
@@ -458,8 +540,28 @@
   @apply flex-row gap-3;
 }
 
+.time-range__row {
+  @apply mt-3;
+}
+
+.time-range__days {
+  @apply mb-3;
+}
+
+.time-range__remove {
+  @apply mt-3 items-end;
+}
+
+.time-range__add {
+  @apply mt-4 items-center;
+}
+
+.time-range__add-label {
+  @apply text-base font-medium text-white;
+}
+
 .time-range__slot {
-  @apply flex-1 overflow-hidden rounded-2xl bg-[#222324];
+  @apply overflow-hidden rounded-2xl bg-[#222324];
 }
 
 .time-range__slot-fill {
@@ -486,6 +588,15 @@
   @apply mt-3 h-[200px];
 }
 
+/* The space the hidden Add button took, so the sheet doesn't shrink while the wheel is open. */
+.time-range__wheel-space--raised {
+  @apply h-[240px];
+}
+
+.time-range__wheel-space--auto {
+  @apply mt-3;
+}
+
 .time-range__wheels {
   @apply h-[200px] flex-row overflow-hidden rounded-2xl bg-[#222324];
 }
@@ -493,6 +604,10 @@
 /* The band behind the middle row of every wheel, like the iOS time picker. */
 .time-range__highlight {
   @apply absolute left-2 right-2 top-[80px] h-10 rounded-lg bg-white/10;
+}
+
+.time-range__native {
+  @apply flex-1 items-center justify-center;
 }
 
 .time-range__column {
@@ -505,6 +620,14 @@
 
 .time-wheel__row {
   @apply h-10 items-center justify-center;
+}
+
+.time-wheel__row--start {
+  @apply items-start pl-3;
+}
+
+.time-wheel__row--end {
+  @apply items-end pr-3;
 }
 
 .time-wheel__label {
@@ -550,4 +673,97 @@
 
 .city-suggestion__detail--selected {
   @apply text-white;
+}
+
+/* Sign in */
+.auth-screen {
+  @apply flex-1 bg-black;
+}
+
+/* Grows to fill the screen so the form sits in the middle, and scrolls once the keyboard shrinks the space. */
+/* Starts from the top; the screen adds padding so the hero sits in the upper-middle of the page */
+.auth-screen__content {
+  @apply flex-grow justify-start px-6;
+}
+
+.auth-screen__hero {
+  @apply mb-8;
+}
+
+.auth-screen__title {
+  @apply text-center text-4xl font-extrabold text-white;
+}
+
+.auth-screen__subtitle {
+  @apply mt-3 text-center text-lg text-neutral-400;
+}
+
+.auth-screen__input {
+  /* Line height matches the font size so iOS doesn't push the text to the bottom of the box. */
+  @apply h-14 rounded-2xl bg-[#222324] px-4 py-0 text-[16px] leading-none text-white;
+}
+
+.auth-screen__button {
+  @apply mt-4 h-14 items-center justify-center rounded-full bg-violet-500 active:opacity-80;
+}
+
+.auth-screen__button--disabled {
+  @apply bg-[#3a3a3c];
+}
+
+.auth-screen__button-label {
+  @apply text-base font-semibold text-white;
+}
+
+/* Preferences quiz */
+.quiz-screen {
+  @apply flex-1 bg-black px-5;
+}
+
+.quiz-screen__top {
+  @apply mt-3 flex-row items-center justify-between;
+}
+
+.quiz-screen__back {
+  @apply active:opacity-60;
+}
+
+.quiz-screen__back--hidden {
+  @apply opacity-0;
+}
+
+.quiz-screen__back-label {
+  @apply text-base font-medium text-violet-400;
+}
+
+.quiz-screen__count {
+  @apply text-sm font-medium text-neutral-400;
+}
+
+.quiz-screen__body {
+  @apply mt-2 shrink;
+}
+
+.quiz-screen__button {
+  @apply mt-4 h-14 items-center justify-center rounded-full bg-violet-500 active:opacity-80;
+}
+
+.quiz-screen__button--disabled {
+  @apply bg-[#3a3a3c];
+}
+
+.quiz-screen__button-label {
+  @apply text-base font-semibold text-white;
+}
+
+.quiz-progress {
+  @apply flex-row gap-2;
+}
+
+.quiz-progress__bar {
+  @apply h-1.5 flex-1 rounded-full bg-[#2c2c2e];
+}
+
+.quiz-progress__bar--done {
+  @apply bg-violet-500;
 }

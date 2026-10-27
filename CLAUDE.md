@@ -13,7 +13,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current state
 
-Early scaffold: only the `(tabs)` group exists (`index`, `pinned`, `settings`) under a root `Stack` with headers hidden. The `(auth)` group, `lib/`, `store/`, `types/`, Clerk, Zustand and AsyncStorage from the planned stack are not yet set up. `constants/images.ts` is an empty `images` object. The Supabase/Python scraping backend described in `AGENTS.md` is planned and is not in this repo yet.
+The `(tabs)` group exists (`index`, `pinned`, `settings`) under a root `Stack` with headers hidden. Zustand + AsyncStorage stores live in `store/`. The `(auth)` group and Clerk are not set up yet.
+
+Events are real, scraped on demand by the Expo Router API route `app/api/events+api.ts` (`GET /api/events?location=&distance=&days=&times=&interests=`, the raw preference strings). It calls `lib/scrapers/` (one adapter per source), normalizes to `EventItem` (`lib/scrapers/normalize.ts`, categories from `lib/categorize.ts`), then filters and ranks by distance/availability/interests (`lib/ranking.ts`). Sources: Luma (its internal discover API, by coordinates), Meetup (GraphQL `api.meetup.com/gql-ext`, no token needed for search), Eventbrite (NYC search pages' `window.__SERVER_DATA__`, plus optional official-API price lookups), NYC Parks (live JSON feed; the Open Data dataset is stale), and key-gated Ticketmaster, SeatGeek and PredictHQ. Keys go in `.env.local` (see `.env.example`). A source without its key is skipped. Eventbrite and NYC Parks only run near NYC. Results are cached for 30 min per source on `globalThis` (the dev server re-runs API modules per request). The app fetches it with `hooks/useEvents.ts`. Pinned events are stored as whole objects in `store/events.ts`. The Supabase/Python backend described in `AGENTS.md` is still a later step.
 
 ## Architecture notes
 

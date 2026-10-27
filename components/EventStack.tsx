@@ -3,7 +3,6 @@ import type { SharedValue } from 'react-native-reanimated';
 
 import { EventCard } from '@/components/EventCard';
 import { SwipeableEventCard } from '@/components/SwipeableEventCard';
-import { EVENTS } from '@/data/events';
 import type { EventItem } from '@/types/events';
 
 type EventStackProps = {
@@ -19,8 +18,7 @@ const MIN_TILT_DEG = 1;
 const MAX_TILT_DEG = 3;
 
 // Random-looking but stable tilt per event, so a card keeps its angle when it moves to the top.
-// The magnitude is hashed from the id; the direction alternates with the event's position in the
-// full list, so neighbouring cards always lean opposite ways.
+// Both the magnitude and the direction are hashed from the id, since the scraped feed has no fixed order.
 function tiltFor(id: string) {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
@@ -29,8 +27,7 @@ function tiltFor(id: string) {
   hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
   hash ^= hash >>> 16;
   const magnitude = MIN_TILT_DEG + (((hash >>> 0) % 1000) / 1000) * (MAX_TILT_DEG - MIN_TILT_DEG);
-  const index = EVENTS.findIndex((event) => event.id === id);
-  return index % 2 === 0 ? magnitude : -magnitude;
+  return (hash >>> 20) % 2 === 0 ? magnitude : -magnitude;
 }
 
 export function EventStack({ events, onPin, onArchive, swipeProgress, onPressTop }: EventStackProps) {

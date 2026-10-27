@@ -6,7 +6,18 @@ export type CitySuggestion = {
   detail: string;
 };
 
-type GeocodingResult = {
+export type Coordinates = { latitude: number; longitude: number };
+
+// Straight-line distance in miles
+export function distanceMiles(a: Coordinates, b: Coordinates) {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(b.latitude - a.latitude);
+  const dLon = toRad(b.longitude - a.longitude);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2;
+  return 3958.8 * 2 * Math.asin(Math.sqrt(h));
+}
+
+type GeocodingResult = Coordinates & {
   id: number;
   name: string;
   admin1?: string;
@@ -26,14 +37,19 @@ const FEATURE_LABELS: Record<string, string> = {
 const ENDPOINT = 'https://geocoding-api.open-meteo.com/v1/search';
 const MAX_RESULTS = 4;
 
-// Open-Meteo's geocoder is free, needs no API key and tolerates small typos.
-export async function searchCities(query: string, signal?: AbortSignal): Promise<CitySuggestion[]> {
-  const params = new URLSearchParams({ name: query, count: String(MAX_RESULTS), language: 'en', format: 'json' });
+async function fetchResults(name: string, count: number, signal?: AbortSignal): Promise<GeocodingResult[]> {
+  const params = new URLSearchParams({ name, count: String(count), language: 'en', format: 'json' });
   const response = await fetch(`${ENDPOINT}?${params}`, { signal });
   if (!response.ok) return [];
   const data: { results?: GeocodingResult[] } = await response.json();
+  return data.results ?? [];
+}
 
-  return (data.results ?? []).map((result) => {
+// Open-Meteo's geocoder is free, needs no API key and tolerates small typos.
+export async function searchCities(query: string, signal?: AbortSignal): Promise<CitySuggestion[]> {
+  const results = await fetchResults(query, MAX_RESULTS, signal);
+
+  return results.map((result) => {
     const region = result.admin1 ?? result.country_code ?? '';
     return {
       id: result.id,
@@ -43,4 +59,15 @@ export async function searchCities(query: string, signal?: AbortSignal): Promise
         .join(' · '),
     };
   });
+}
+
+// Turns a saved location like "Greenport, New York" or "New York, NY" into coordinates.
+// The geocoder only searches by name, so the part after the comma picks between same-named places.
+export async function geocodeCity(label: string): Promise<Coordinates | null> {
+  const [name, region = ''] = label.split(',').map((part) => part.trim());
+  if (!name) return null;
+  const results = await fetchResults(name, 10);
+  const wanted = region.toLowerCase();
+  const match = (wanted && results.find((result) => result.admin1?.toLowerCase() === wanted)) || results[0];
+  return match ? { latitude: match.latitude, longitude: match.longitude } : null;
 }

@@ -3,10 +3,10 @@ import type { PreferenceForm, PreferenceFormId } from '@/types/preferences';
 export const PREFERENCE_FORMS: Record<PreferenceFormId, PreferenceForm> = {
   location: {
     title: 'Location & Distance',
-    subtitle: 'Where you are and how far you will travel for events',
+    subtitle: 'Where you live and a commutable distance for events',
     fields: [
       { key: 'location', label: 'Location', placeholder: 'Enter a city' },
-      { key: 'distance', label: 'Distance (miles)', placeholder: '5', keyboardType: 'numeric' },
+      { key: 'distance', label: 'Distance (miles)', placeholder: '5' },
     ],
   },
   availability: {
@@ -20,33 +20,37 @@ export const PREFERENCE_FORMS: Record<PreferenceFormId, PreferenceForm> = {
   interests: {
     title: 'Interests',
     subtitle: 'Tap the topics you want to see events for',
-    fields: [{ key: 'interests', label: 'Interests', placeholder: 'Running, Movies, Finance' }],
+    fields: [{ key: 'interests', label: 'Interests', placeholder: 'Music, Food, Outdoors' }],
   },
 };
 
-export const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+export const DISTANCE_MIN = 5;
+export const DISTANCE_MAX = 30;
+export const DISTANCE_STEP = 5;
+
+export const DAYS =['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export const INTEREST_OPTIONS = [
-  'Running',
-  'Movies',
-  'Finance',
   'Music',
-  'Art',
   'Food',
-  'Comedy',
-  'Fitness',
-  'Yoga',
-  'Tech',
-  'Networking',
-  'Theater',
-  'Books',
-  'Gaming',
   'Outdoors',
+  'Art',
+  'Fitness',
+  'Comedy',
+  'Books',
   'Nightlife',
+  'Yoga',
   'Photography',
+  'Movies',
   'Dance',
+  'Tech',
+  'Theater',
   'Wellness',
+  'Gaming',
+  'Running',
   'Fashion',
+  'Networking',
+  'Finance',
 ];
 
 /** Similar interests and sub-niches that get suggested when an interest is selected */

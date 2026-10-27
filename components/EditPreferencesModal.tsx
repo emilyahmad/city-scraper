@@ -1,11 +1,12 @@
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { type ComponentRef, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   Text,
   View,
   useWindowDimensions,
@@ -17,6 +18,7 @@ import {
 } from "react-native-gesture-handler";
 import Animated, {
   Easing,
+  useAnimatedScrollHandler,
   type SharedValue,
   useAnimatedStyle,
   useSharedValue,
@@ -26,6 +28,7 @@ import Animated, {
 import { scheduleOnRN } from "react-native-worklets";
 
 import { DayPicker } from "@/components/DayPicker";
+import { DistanceSlider } from "@/components/DistanceSlider";
 import { CitySuggestions } from "@/components/CitySuggestions";
 import { EditableField } from "@/components/EditableField";
 import { InterestChips } from "@/components/InterestChips";
@@ -34,6 +37,7 @@ import { images } from "@/constants/images";
 import { useKeyboardHeight } from "@/hooks/useKeyboardHeight";
 import { usePressScale } from "@/hooks/usePressScale";
 import { PREFERENCE_FORMS } from "@/data/preferences";
+import { hasEmptySlotDays } from "@/lib/times";
 import { usePreferencesStore } from "@/store/preferences";
 import type { PreferenceFormId, PreferenceValues } from "@/types/preferences";
 
@@ -42,6 +46,9 @@ type EditPreferencesModalProps = {
   formId: PreferenceFormId;
   onClose: () => void;
 };
+
+// Wrapped from RN's ScrollView (not Animated.ScrollView) so className keeps working under NativeWind.
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 const ANIMATION_MS = 350;
 const CLOSE_MS = 280;
@@ -168,7 +175,9 @@ export function EditPreferencesModal({
                 sheetStyle,
                 // Never taller than the space above the keyboard, so the top of the sheet can't slide off screen.
                 { maxHeight: height * (1 - SHEET_TOP_RATIO) - keyboardHeight },
-                expanded ? { flex: 1, marginTop: height * SHEET_TOP_RATIO } : null,
+                expanded
+                  ? { flex: 1, marginTop: height * SHEET_TOP_RATIO }
+                  : null,
               ]}
             >
               <EditPreferencesSheet
@@ -212,9 +221,10 @@ function EditPreferencesSheet({
   // The suggestion the user last tapped.
   const [pickedLocation, setPickedLocation] = useState<string | null>(null);
   const showCitySuggestions = formId === "location" && locationQuery !== null;
-  // Days and times are edited with their own pickers instead of text fields.
+  // Days, times and distance are edited with their own pickers instead of text fields.
   const fields = form.fields.filter(
-    (field) => field.key !== "days" && field.key !== "times",
+    (field) =>
+      field.key !== "days" && field.key !== "times" && field.key !== "distance",
   );
 
   const hasChanges = form.fields.some(
@@ -232,13 +242,26 @@ function EditPreferencesSheet({
       draft.location.trim() &&
       (draft.location === saved.location || draft.location === pickedLocation)
     );
-  const saveDisabled = needsInterests || locationInvalid;
+  // Availability needs at least one day, and the sheet can't be closed without one.
+  const needsDays =
+    formId === "availability" &&
+    (!draft.days.trim() || hasEmptySlotDays(draft.times));
+  const saveDisabled = needsInterests || needsDays || locationInvalid;
   // Closing discards the draft, so it is refused when that would leave no valid location behind.
   const closeBlocked =
-    locationInvalid && (needsLocation || !saved.location.trim());
+    needsDays || (locationInvalid && (needsLocation || !saved.location.trim()));
   useEffect(() => {
     onCloseBlockedChange(closeBlocked);
   }, [closeBlocked, onCloseBlockedChange]);
+
+  // Availability can outgrow the sheet once slots are added, so it scrolls; the offset also tells the swipe-to-close when it is scrolled.
+  const availabilityRef = useRef<ComponentRef<typeof AnimatedScrollView>>(null);
+  const availabilityHeight = useRef(0);
+  const scrollY = useSharedValue(0);
+  const onAvailabilityScroll = useAnimatedScrollHandler((event) => {
+    scrollY.set(event.contentOffset.y);
+    scrollOffset.set(event.contentOffset.y);
+  });
 
   const nudgeX = useSharedValue(0);
   useEffect(() => {
@@ -258,6 +281,8 @@ function EditPreferencesSheet({
   // Tapping a suggestion also shows it, even if that is the city already saved, so the choice can be confirmed.
   const showSave =
     hasChanges || saveDisabled || draft.location === pickedLocation;
+  // Bumped on every save so the availability pickers can close their open time wheel.
+  const [saveCount, setSaveCount] = useState(0);
   const saveOpacity = useSharedValue(0);
   useEffect(() => {
     saveOpacity.value = withTiming(showSave ? 1 : 0, { duration: 200 });
@@ -265,44 +290,43 @@ function EditPreferencesSheet({
   const saveStyle = useAnimatedStyle(() => ({ opacity: saveOpacity.value }));
   const { scaleStyle: saveScale, pressHandlers: savePress } = usePressScale();
 
+  // The sheet stays open after saving and returns to how it looked on opening: no suggestions, no keyboard, no open time wheel, and the save button hides because nothing differs from the saved values.
   const handleSave = () => {
     setValues(draft);
-    if (formId !== "location") {
-      onClose();
-      return;
-    }
-    // The location sheet stays open and returns to how it looked on opening: no suggestions, no keyboard, no save button.
+    setSaveCount((count) => count + 1);
     Keyboard.dismiss();
     setLocationQuery(null);
     setPickedLocation(null);
   };
 
   const saveButton = (
-      <Animated.View
-        style={[saveStyle, saveScale, nudgeStyle]}
-        pointerEvents={showSave ? "auto" : "none"}
+    <Animated.View
+      style={[saveStyle, saveScale, nudgeStyle]}
+      pointerEvents={showSave ? "auto" : "none"}
+    >
+      <Pressable
+        className={
+          saveDisabled
+            ? "edit-modal__save edit-modal__save--disabled"
+            : "edit-modal__save"
+        }
+        disabled={saveDisabled}
+        onPress={handleSave}
+        {...savePress}
       >
-        <Pressable
-          className={
-            saveDisabled
-              ? "edit-modal__save edit-modal__save--disabled"
-              : "edit-modal__save"
-          }
-          disabled={saveDisabled}
-          onPress={handleSave}
-          {...savePress}
-        >
-          <Text className="edit-modal__save-label">
-            {needsInterests
-              ? "No interests selected"
+        <Text className="edit-modal__save-label">
+          {needsInterests
+            ? "No interests selected"
+            : needsDays
+              ? "No time selected"
               : needsLocation
                 ? "No location selected"
                 : locationInvalid
                   ? "Select a suggested city"
                   : "Save Changes"}
-          </Text>
-        </Pressable>
-      </Animated.View>
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 
   return (
@@ -337,37 +361,65 @@ function EditPreferencesSheet({
       ) : (
         <>
           {formId === "availability" ? (
-            <>
-              <DayPicker
-                value={draft.days}
-                onChange={(days) =>
-                  setDraft((current) => ({ ...current, days }))
-                }
-              />
-              <TimeRangePicker
-                value={draft.times}
-                scrollOffset={scrollOffset}
-                onChange={(times) =>
-                  setDraft((current) => ({ ...current, times }))
-                }
-              />
-            </>
+            <AnimatedScrollView
+              ref={availabilityRef}
+              style={{ flexShrink: 1 }}
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onScroll={onAvailabilityScroll}
+              // A new timeslot lands below the fold, so follow the content as it grows.
+              onContentSizeChange={(_, contentHeight) => {
+                if (
+                  contentHeight > availabilityHeight.current &&
+                  availabilityHeight.current
+                )
+                  availabilityRef.current?.scrollToEnd({ animated: true });
+                availabilityHeight.current = contentHeight;
+              }}
+            >
+              <>
+                <DayPicker
+                  value={draft.days}
+                  onChange={(days) =>
+                    setDraft((current) => ({ ...current, days }))
+                  }
+                />
+                <TimeRangePicker
+                  value={draft.times}
+                  days={draft.days}
+                  scrollOffset={scrollOffset}
+                  restoreOffset={scrollY}
+                  closeSignal={saveCount}
+                  onChange={(times) =>
+                    setDraft((current) => ({ ...current, times }))
+                  }
+                />
+              </>
+            </AnimatedScrollView>
           ) : null}
           {fields.length ? (
-          <View className="settings-section__card mt-6">
-            {fields.map((field, index) => (
-              <EditableField
-                key={field.key}
-                field={field}
-                value={draft[field.key]}
-                isLast={index === fields.length - 1}
-                onChange={(value) => {
-                  if (field.key === "location") setLocationQuery(value);
-                  setDraft((current) => ({ ...current, [field.key]: value }));
-                }}
-              />
-            ))}
-          </View>
+            <View className="settings-section__card mt-6">
+              {fields.map((field, index) => (
+                <EditableField
+                  key={field.key}
+                  field={field}
+                  value={draft[field.key]}
+                  isLast={index === fields.length - 1}
+                  onChange={(value) => {
+                    if (field.key === "location") setLocationQuery(value);
+                    setDraft((current) => ({ ...current, [field.key]: value }));
+                  }}
+                />
+              ))}
+            </View>
+          ) : null}
+          {formId === "location" ? (
+            <DistanceSlider
+              value={draft.distance}
+              onChange={(distance) =>
+                setDraft((current) => ({ ...current, distance }))
+              }
+            />
           ) : null}
         </>
       )}

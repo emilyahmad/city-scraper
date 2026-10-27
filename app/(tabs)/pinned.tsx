@@ -1,18 +1,33 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { ScrollView } from 'react-native';
+import Animated, { Easing, LinearTransition } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/EmptyState';
-import { EventCard } from '@/components/EventCard';
+import { EventDetailModal } from '@/components/EventDetailModal';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { EVENTS } from '@/data/events';
+import { SwipeableEventCard } from '@/components/SwipeableEventCard';
+import { images } from '@/constants/images';
+import { withToneSequence } from '@/constants/tones';
 import { useEventsStore } from '@/store/events';
+import type { EventItem } from '@/types/events';
+
+// Cards below an archived one glide up into the gap instead of jumping
+const SHIFT_UP = LinearTransition.duration(140).easing(Easing.out(Easing.cubic));
 
 export default function PinnedScreen() {
-  const pinnedIds = useEventsStore((state) => state.pinnedIds);
+  const pinnedEvents = useEventsStore((state) => state.pinnedEvents);
   const unpin = useEventsStore((state) => state.unpin);
   const clearNewPin = useEventsStore((state) => state.clearNewPin);
+  // Kept after closing so the modal still has the event while it slides away
+  const [detailEvent, setDetailEvent] = useState<EventItem>();
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  const openDetail = (event: EventItem) => {
+    setDetailEvent(event);
+    setDetailOpen(true);
+  };
 
   // Opening the tab counts as seeing the new pin
   useFocusEffect(
@@ -21,31 +36,34 @@ export default function PinnedScreen() {
     }, [clearNewPin]),
   );
 
-  const pinned = EVENTS.filter((event) => pinnedIds.includes(event.id)).sort((a, b) =>
-    a.startAt.localeCompare(b.startAt),
-  );
+  const pinned = withToneSequence([...pinnedEvents].sort((a, b) => a.startAt.localeCompare(b.startAt)));
 
   return (
     <SafeAreaView edges={['top']} className="tab-screen">
-      <ScrollView contentContainerClassName="tab-screen__content">
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="tab-screen__content">
         <ScreenHeader title="Pinned" subtitle="Your saved events" />
         {pinned.length === 0 ? (
           <EmptyState
-            icon="bookmark-outline"
+            icon={{ image: images.pinnedIcons }}
             title="Nothing pinned yet"
             message="Swipe right on an event to pin it and it will show up here."
           />
         ) : (
           pinned.map((event) => (
-            <View key={event.id} className="pinned-item">
-              <EventCard event={event} />
-              <Pressable className="pinned-item__unpin" onPress={() => unpin(event.id)}>
-                <Text className="pinned-item__unpin-label">Unpin</Text>
-              </Pressable>
-            </View>
+            <Animated.View key={event.id} layout={SHIFT_UP} className="pinned-item">
+              {/* Swiping left unpins and archives, so the event doesn't return to the feed */}
+              <SwipeableEventCard event={event} onSwipeLeft={() => unpin(event.id)} onPress={() => openDetail(event)} />
+            </Animated.View>
           ))
         )}
       </ScrollView>
+      {/* Already pinned, so the modal only offers swipe left (unpin and archive) */}
+      <EventDetailModal
+        event={detailEvent}
+        visible={detailOpen}
+        onClose={() => setDetailOpen(false)}
+        onArchive={(event) => unpin(event.id)}
+      />
     </SafeAreaView>
   );
 }
