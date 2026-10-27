@@ -36,7 +36,13 @@ On signing in, users enter basic information and their preferences for events, t
 
 Check out this [video demo](https://youtu.be/IEIi_-E4XUI) - submitted to the 2026 Congressional App Challenge.
 
-## Deploying
+## Try it yourself
+
+Download the Expo Go app and scan the QR code
+
+<img src="screenshots/functionality/qr-code.png" width="150" height="150" alt="Part of failing the cooking sequence">
+
+<!-- ## Deploying
 
 The `/api/events` scraper runs on EAS Hosting at https://emilyahmad.expo.app, and the app reaches it through the `origin` set on the `expo-router` plugin in `app.json`. The phone app is delivered with EAS Update and opened in Expo Go.
 
@@ -49,4 +55,4 @@ npm run update -- --message "..."
 
 # API keys for the key-gated sources
 eas env:create --environment production --visibility secret --name TICKETMASTER_API_KEY --value ...
-```
+``` -->
