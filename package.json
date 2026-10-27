@@ -19,6 +19,7 @@
     "expo-status-bar": "~58.0.4",
     "expo-symbols": "~58.0.4",
     "expo-system-ui": "~58.0.6",
+    "expo-updates": "~58.0.18",
     "expo-web-browser": "~58.0.6",
     "nativewind": "5.0.0-rc.0",
     "react": "19.3.0",
@@ -49,7 +50,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "update": "expo export -p ios -p android --no-bytecode --output-dir dist-update && npx eas-cli@latest update --skip-bundler --input-dir dist-update --branch production --environment production"
   },
   "private": true,
   "overrides": {

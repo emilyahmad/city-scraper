@@ -61,7 +61,15 @@ export const fetchLuma: Scraper = async ({ latitude, longitude, to }) => {
       pagination_limit: String(PAGE_SIZE),
     });
     if (cursor) params.set('pagination_cursor', cursor);
-    const data = await fetchJson<LumaPage>(`${API}?${params}`);
+    let data: LumaPage;
+    try {
+      data = await fetchJson<LumaPage>(`${API}?${params}`);
+    } catch (error) {
+      // Keep the pages already fetched, e.g. when EAS Hosting's per-request fetch cap cuts the paging short
+      if (page === 0) throw error;
+      console.warn(`[events] luma stopped after ${page} pages: ${error instanceof Error ? error.message : error}`);
+      break;
+    }
 
     for (const entry of data.entries) {
       if (entry.event.location_type === 'offline') events.push(toRawEvent(entry));

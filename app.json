@@ -24,7 +24,12 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "origin": "https://emilyahmad.expo.app"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -48,6 +53,10 @@
         "projectId": "6088bc15-e538-42e2-8b29-00149cb2aa9a"
       }
     },
-    "owner": "emilyahmads-team"
+    "owner": "emilyahmads-team",
+    "runtimeVersion": "exposdk:58.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/6088bc15-e538-42e2-8b29-00149cb2aa9a"
+    }
   }
 }

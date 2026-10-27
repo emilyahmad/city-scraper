@@ -35,3 +35,18 @@ On signing in, users enter basic information and their preferences for events, t
 <br>
 
 Check out this [video demo](https://youtu.be/IEIi_-E4XUI) - submitted to the 2026 Congressional App Challenge.
+
+## Deploying
+
+The `/api/events` scraper runs on EAS Hosting at https://emilyahmad.expo.app, and the app reaches it through the `origin` set on the `expo-router` plugin in `app.json`. The phone app is delivered with EAS Update and opened in Expo Go.
+
+```bash
+# API / scraper or web changes
+npx expo export -p web && eas deploy --prod
+
+# App changes. Exports plain JS (Expo Go can't run Hermes bytecode) and publishes to the production channel
+npm run update -- --message "..."
+
+# API keys for the key-gated sources
+eas env:create --environment production --visibility secret --name TICKETMASTER_API_KEY --value ...
+```
