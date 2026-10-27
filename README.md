@@ -1,67 +1,37 @@
 # City Scraper
 
-## Description
+Event exploration and management tool. Scrapes event-hosting websites like Luma, EventBrite, and Ticketmaster's public APIs to suggest events for users based on their inputted location, availability throughout the week, location, and range of commutable distance.
 
-,Living in New York City, there is constantly so much to do
-but it's hard to find everything all at once
-events that fit your interests, availability, location and are within a distance you can commute to.
-I'm the person in my friend group that people
-my friends come to me
-asking about what events I've found
-and that they'd love to come along
-after talking to many people,
-lots of people subscribe to certain apps such as Luma, Meetup, or EventBrite
-others rely on email newsletters
-others stick to word-of-mouth
-I build City Scraper as an automation,
-rather than manually scraping the internet and these specific event sites, as well as social media
-my app is constantly pulling free, public data online
-comparing it to the preferences I've selected,
-and organizing events in a concise way
-that I can manually review the filtered options it recommends to me
-and sign up for the events on their respective sites
-Scrapes social media and the internet for events based on your location, interests, availability, and more
+Try it yourself, clone the repo and run
 
-## Inspiration
+```
+npm install
+npx expo start
+```
 
-This app was inspired by a conversation I've had several times with friends
-where they ask me to let them know if I find any more events
-we'd all find interesting
-and let them know and invite them,
-and attending events and asking people how they came across it
-I thought a centralized place where users can receive recommendations
-would be an extremely helpful solution
-to this inconvenience,
-as well as providing a concise space to organize it
+then, open it in your browser or the Expo Go app.
 
-## Technical difficulties
+## Screenshots
 
-I'm still new to building with React Native
-as well as web scraping
-and generally, automating
-so this project forced me to learn a whole new technical stack
-but I had a lot of fun learning
-and I look forward to building a lot more apps with React Native
+Recommended events are displayed with their location on a map, with an event card containing basic information. Tapping on the card centralizes the user's view of the event on the map, and tapping again opens an expanded modal with more event information and a link to the external listing. Swiping left archives the event, swiping right saves it.
 
-## Future work
+<div>
+<img src="screenshots/functionality/loading.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+<img src="screenshots/functionality/card.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+<img src="screenshots/functionality/expanded.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+<img src="screenshots/functionality/pinned.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+</div>
+<br>
 
-I would add more personalization,
-this would probably be optional,
-but allow users to add more details about themselves
-including their social media handles, some of the videos and images they've liked
-to get a better understanding of what they are interested in
-and deliver better recommendations
+On signing in, users enter basic information and their preferences for events, they can return to their settings page to edit this information. Editing preferences will reload the recommendations, but keep pinned events safe.>
 
-This app is meant to be a one-stop-shop for event recommendations,
-and not a place to actually host or register for the events themselves, or chat with other people attending the events,
-I want the sign up process to be extremely simplified
-and for the app to solve it's one purpose:
-discovering events and helping you organize the ones you are interested in
-rather than offering useless features,
-just get really good at what it is mainly offering
+<div>
+<img src="screenshots/settings/settings.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+<img src="screenshots/settings/location.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+<img src="screenshots/settings/availability.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
+<img src="screenshots/settings/interests.png" width="140.333" height="286.33" alt="Part of failing the cooking sequence">
 
-Some regions, lke NYC are super widespread
-so I would add an optional
-specific home, school, or work address users can add
-that would provide a specific area to start their
-commutable radius from
+</div>
+<br>
+
+Check out this [video demo](https://youtu.be/IEIi_-E4XUI) - submitted to the 2026 Congressional App Challenge.
